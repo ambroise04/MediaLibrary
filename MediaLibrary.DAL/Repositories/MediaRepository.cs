@@ -1,6 +1,7 @@
-﻿using MediaLibrary.DAL.Interfaces;
+﻿using MediaLibrary.DAL.Enumerations;
+using MediaLibrary.DAL.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -8,41 +9,133 @@ namespace MediaLibrary.DAL.Repositories
 {
     public class MediaRepository : IMediaRepository
     {
-        private readonly string connectionString = ConfigurationManager.ConnectionStrings["MediaDB"].ConnectionString;
+        private readonly SqlConnection connection;
+
+        public MediaRepository(SqlConnection connection)
+        {
+            this.connection = connection;
+        }
+
         public bool Delete(int id)
         {
-            throw new System.NotImplementedException();
+            if (id <= 0)
+                throw new ArgumentException("Bad id was provided");
+
+            using (connection)
+            {
+                SqlCommand cmd = new SqlCommand("spDeleteMedia", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                connection.Open();
+                cmd.Parameters.AddWithValue("@Id", id);
+                var result = cmd.ExecuteNonQuery();
+
+                return result > 0;
+            }
         }
 
         public ICollection<Entities.Media> GetAll()
         {
-            throw new System.NotImplementedException();
+            List<Entities.Media> medias = new List<Entities.Media>();
+            using (connection)
+            {
+                SqlCommand cmd = new SqlCommand("spGetMediaById", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                connection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var media = new Entities.Media
+                    {
+                        Id = Convert.ToInt32(reader["Id"]),
+                        Name = reader["Name"].ToString(),
+                        Url = reader["Url"].ToString(),
+                        Path = reader["Path"].ToString(),
+                        Type = (MediaType)Convert.ToInt32(reader["Path"]),
+                        Done = Convert.ToBoolean(reader["Done"])
+                    };
+                    medias.Add(media);
+                };
+            }
+            return medias;
         }
 
         public Entities.Media GetById(int id)
         {
-            throw new System.NotImplementedException();
+            if (id <= 0)
+                throw new ArgumentException("Bad id was provided");
+
+            Entities.Media media = new Entities.Media();
+            using (connection)
+            {
+                SqlCommand cmd = new SqlCommand("spGetMediaById", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                connection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    media.Id = Convert.ToInt32(reader["Id"]);
+                    media.Name = reader["Name"].ToString();
+                    media.Url = reader["Url"].ToString();
+                    media.Path = reader["Path"].ToString();
+                    media.Type = (MediaType)Convert.ToInt32(reader["Path"]);
+                    media.Done = Convert.ToBoolean(reader["Done"]);
+                }
+
+                return media;
+            }
         }
 
         public Entities.Media Insert(Entities.Media entity)
         {
-            using (SqlConnection con = new SqlConnection(connectionString))
+            if (entity is null)
+                throw new ArgumentNullException(nameof(entity));
+
+            using (connection)
             {
-                var cmd = new SqlCommand("spAddNew", con);
-                con.Open();
+                var cmd = new SqlCommand("spAddMedia", connection);
+                connection.Open();
+
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Name", employee.Name);
-                cmd.Parameters.AddWithValue("@Position", employee.Position);
-                cmd.Parameters.AddWithValue("@Office", employee.Office);
-                cmd.Parameters.AddWithValue("@Age", employee.Age);
-                cmd.Parameters.AddWithValue("@Salary", employee.Salary);
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.AddWithValue("@Name", entity.Name);
+                cmd.Parameters.AddWithValue("@Url", entity.Url);
+                cmd.Parameters.AddWithValue("@Path", entity.Path);
+                cmd.Parameters.AddWithValue("@Type", entity.Type);
+                cmd.Parameters.AddWithValue("@Done", entity.Done);
+
+                var result = cmd.ExecuteNonQuery();
+                if (result > 0)
+                    return entity;
+                else
+                    throw new Exception("An error was encountered when inserting media");
             }
         }
 
         public Entities.Media Update(Entities.Media entity)
         {
-            throw new System.NotImplementedException();
+            if (entity is null)
+                throw new ArgumentNullException(nameof(entity));
+            if (entity.Id <= 0)
+                throw new ArgumentException("The provided media has wrong properties. Please check the object's id.");
+
+            using (connection)
+            {
+                var cmd = new SqlCommand("spUpdateMedia", connection);
+                connection.Open();
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Id", entity.Id);
+                cmd.Parameters.AddWithValue("@Name", entity.Name);
+                cmd.Parameters.AddWithValue("@Url", entity.Url);
+                cmd.Parameters.AddWithValue("@Path", entity.Path);
+                cmd.Parameters.AddWithValue("@Type", entity.Type);
+                cmd.Parameters.AddWithValue("@Done", entity.Done);
+
+                var result = cmd.ExecuteNonQuery();
+                if (result > 0)
+                    return entity;
+                else
+                    throw new Exception("An error was encountered when updating media");
+            }
         }
     }
 }
