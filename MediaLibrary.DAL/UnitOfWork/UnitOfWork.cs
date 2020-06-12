@@ -20,6 +20,7 @@ namespace Library.DAL.UnitOfWork
             Context = context;
             Connection = new SqlConnection(Context._connectionString);
         }
+
         ~UnitOfWork() {
             Dispose();
         }

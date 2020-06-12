@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.MVC5", "MediaLibrar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.DAL", "MediaLibrary.DAL\Library.DAL.csproj", "{97DB91D6-788F-435A-83D2-CC892E68428D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{E9021079-992B-4998-B7BA-DEDFA3381E0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.DAL.Tests", "Library.DAL.Tests\Library.DAL.Tests.csproj", "{B88DD23C-A3E4-4E84-B4F6-FBCB7A3B0727}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,9 +25,17 @@ Global
 		{97DB91D6-788F-435A-83D2-CC892E68428D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97DB91D6-788F-435A-83D2-CC892E68428D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97DB91D6-788F-435A-83D2-CC892E68428D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B88DD23C-A3E4-4E84-B4F6-FBCB7A3B0727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B88DD23C-A3E4-4E84-B4F6-FBCB7A3B0727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B88DD23C-A3E4-4E84-B4F6-FBCB7A3B0727}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B88DD23C-A3E4-4E84-B4F6-FBCB7A3B0727}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{97DB91D6-788F-435A-83D2-CC892E68428D} = {E9021079-992B-4998-B7BA-DEDFA3381E0C}
+		{B88DD23C-A3E4-4E84-B4F6-FBCB7A3B0727} = {E9021079-992B-4998-B7BA-DEDFA3381E0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {716AD08D-6624-4B0F-9487-A18BBB6CD01E}

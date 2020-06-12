@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\EFContext.cs" />
-    <Compile Include="Context\ADOContext.cs" />
+    <Compile Include="Context\ADODbContext.cs" />
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Media.cs" />
     <Compile Include="Enumerations\MediaType.cs" />

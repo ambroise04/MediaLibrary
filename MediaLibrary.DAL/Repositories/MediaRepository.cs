@@ -3,6 +3,7 @@ using MediaLibrary.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace MediaLibrary.DAL.Repositories
@@ -11,9 +12,9 @@ namespace MediaLibrary.DAL.Repositories
     {
         private readonly SqlConnection connection;
 
-        public MediaRepository(SqlConnection connection)
+        public MediaRepository(DbConnection connection)
         {
-            this.connection = connection;
+            this.connection = (SqlConnection)connection;
         }
 
         public bool Delete(int id)
