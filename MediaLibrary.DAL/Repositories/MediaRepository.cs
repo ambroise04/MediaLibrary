@@ -21,41 +21,40 @@ namespace MediaLibrary.DAL.Repositories
             if (id <= 0)
                 throw new ArgumentException("Bad id was provided");
 
-            using (connection)
-            {
-                SqlCommand cmd = new SqlCommand("spDeleteMedia", connection);
-                cmd.CommandType = CommandType.StoredProcedure;
-                connection.Open();
-                cmd.Parameters.AddWithValue("@Id", id);
-                var result = cmd.ExecuteNonQuery();
+            SqlCommand cmd = new SqlCommand("spDeleteMedia", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            connection.Open();
+            cmd.Parameters.AddWithValue("@Id", id);
+            var result = cmd.ExecuteNonQuery();
+            connection.Close();
 
-                return result > 0;
-            }
+            return result > 0;
         }
 
         public ICollection<Entities.Media> GetAll()
         {
             List<Entities.Media> medias = new List<Entities.Media>();
-            using (connection)
+
+            SqlCommand cmd = new SqlCommand("spGetMediaById", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            connection.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                SqlCommand cmd = new SqlCommand("spGetMediaById", connection);
-                cmd.CommandType = CommandType.StoredProcedure;
-                connection.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                var media = new Entities.Media
                 {
-                    var media = new Entities.Media
-                    {
-                        Id = Convert.ToInt32(reader["Id"]),
-                        Name = reader["Name"].ToString(),
-                        Url = reader["Url"].ToString(),
-                        Path = reader["Path"].ToString(),
-                        Type = (MediaType)Convert.ToInt32(reader["Path"]),
-                        Done = Convert.ToBoolean(reader["Done"])
-                    };
-                    medias.Add(media);
+                    Id = Convert.ToInt32(reader["Id"]),
+                    Name = reader["Name"].ToString(),
+                    Url = reader["Url"].ToString(),
+                    Path = reader["Path"].ToString(),
+                    Type = (MediaType)Convert.ToInt32(reader["Path"]),
+                    Done = Convert.ToBoolean(reader["Done"])
                 };
-            }
+                medias.Add(media);
+            };
+
+            connection.Close();
+
             return medias;
         }
 
@@ -65,24 +64,24 @@ namespace MediaLibrary.DAL.Repositories
                 throw new ArgumentException("Bad id was provided");
 
             Entities.Media media = new Entities.Media();
-            using (connection)
-            {
-                SqlCommand cmd = new SqlCommand("spGetMediaById", connection);
-                cmd.CommandType = CommandType.StoredProcedure;
-                connection.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    media.Id = Convert.ToInt32(reader["Id"]);
-                    media.Name = reader["Name"].ToString();
-                    media.Url = reader["Url"].ToString();
-                    media.Path = reader["Path"].ToString();
-                    media.Type = (MediaType)Convert.ToInt32(reader["Path"]);
-                    media.Done = Convert.ToBoolean(reader["Done"]);
-                }
 
-                return media;
+            SqlCommand cmd = new SqlCommand("spGetMediaById", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            connection.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                media.Id = Convert.ToInt32(reader["Id"]);
+                media.Name = reader["Name"].ToString();
+                media.Url = reader["Url"].ToString();
+                media.Path = reader["Path"].ToString();
+                media.Type = (MediaType)Convert.ToInt32(reader["Path"]);
+                media.Done = Convert.ToBoolean(reader["Done"]);
             }
+
+            connection.Close();
+
+            return media;
         }
 
         public Entities.Media Insert(Entities.Media entity)
@@ -90,24 +89,23 @@ namespace MediaLibrary.DAL.Repositories
             if (entity is null)
                 throw new ArgumentNullException(nameof(entity));
 
-            using (connection)
-            {
-                var cmd = new SqlCommand("spAddMedia", connection);
-                connection.Open();
+            var cmd = new SqlCommand("spAddMedia", connection);
+            connection.Open();
 
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Name", entity.Name);
-                cmd.Parameters.AddWithValue("@Url", entity.Url);
-                cmd.Parameters.AddWithValue("@Path", entity.Path);
-                cmd.Parameters.AddWithValue("@Type", entity.Type);
-                cmd.Parameters.AddWithValue("@Done", entity.Done);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Name", entity.Name);
+            cmd.Parameters.AddWithValue("@Url", entity.Url);
+            cmd.Parameters.AddWithValue("@Path", entity.Path);
+            cmd.Parameters.AddWithValue("@Type", entity.Type);
+            cmd.Parameters.AddWithValue("@Done", entity.Done);
 
-                var result = cmd.ExecuteNonQuery();
-                if (result > 0)
-                    return entity;
-                else
-                    throw new Exception("An error was encountered when inserting media");
-            }
+            var result = cmd.ExecuteNonQuery();
+            connection.Close();
+
+            if (result > 0)
+                return entity;
+            else
+                throw new Exception("An error was encountered when inserting media");
         }
 
         public Entities.Media Update(Entities.Media entity)
@@ -117,25 +115,24 @@ namespace MediaLibrary.DAL.Repositories
             if (entity.Id <= 0)
                 throw new ArgumentException("The provided media has wrong properties. Please check the object's id.");
 
-            using (connection)
-            {
-                var cmd = new SqlCommand("spUpdateMedia", connection);
-                connection.Open();
+            var cmd = new SqlCommand("spUpdateMedia", connection);
+            connection.Open();
 
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Id", entity.Id);
-                cmd.Parameters.AddWithValue("@Name", entity.Name);
-                cmd.Parameters.AddWithValue("@Url", entity.Url);
-                cmd.Parameters.AddWithValue("@Path", entity.Path);
-                cmd.Parameters.AddWithValue("@Type", entity.Type);
-                cmd.Parameters.AddWithValue("@Done", entity.Done);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Id", entity.Id);
+            cmd.Parameters.AddWithValue("@Name", entity.Name);
+            cmd.Parameters.AddWithValue("@Url", entity.Url);
+            cmd.Parameters.AddWithValue("@Path", entity.Path);
+            cmd.Parameters.AddWithValue("@Type", entity.Type);
+            cmd.Parameters.AddWithValue("@Done", entity.Done);
 
-                var result = cmd.ExecuteNonQuery();
-                if (result > 0)
-                    return entity;
-                else
-                    throw new Exception("An error was encountered when updating media");
-            }
+            var result = cmd.ExecuteNonQuery();
+            connection.Close();
+
+            if (result > 0)
+                return entity;
+            else
+                throw new Exception("An error was encountered when updating media");
         }
     }
 }
