@@ -3,14 +3,15 @@ using MediaLibrary.DAL.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Library.DAL.Tests.Media
 {
     [TestClass]
-    public class AddMediaTests
+    public class GetByIdMediaTests
     {
         [TestMethod]
-        public void AddMedia_CorrectMediaProvided_ReturnAddedMedia()
+        public void GetByIDMedia_CorrectMediaIdProvided_ReturnMediaRetrieved()
         {
             var connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MediaLibrary;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
@@ -18,24 +19,17 @@ namespace Library.DAL.Tests.Media
             {
                 //ARRANGE
                 var repository = new MediaRepository(connection);
-                var media = new MediaLibrary.DAL.Entities.Media
-                {
-                    Name = "Programming in C#",
-                    Url = @"C:\Users\Ambroise\Desktop\UNamur",
-                    Path = @"C:\Users\Ambroise\Desktop\UNamur",
-                    Type = MediaType.Book,
-                    Done = true
-                };
+                var lastMedia = repository.GetAll().LastOrDefault();
                 //ACT
-                var result = repository.Insert(media);
+                var result = repository.GetById(lastMedia.Id);
                 //ASSERT
                 Assert.IsNotNull(result);
-                Assert.AreEqual("Programming in C#", result.Name);
+                Assert.AreEqual(lastMedia.Id, result.Id);
             }
         }
 
         [TestMethod]
-        public void AddMedia_NullMediaProvided_ThrowArgumentNullException()
+        public void GetByIDMedia_BAdMediaIdProvided_ThrowArgumentException()
         {
             var connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MediaLibrary;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
@@ -46,7 +40,8 @@ namespace Library.DAL.Tests.Media
                 
                 //ACT
                 //ASSERT
-                Assert.ThrowsException<ArgumentNullException>(() => repository.Insert(null));
+                Assert.ThrowsException<ArgumentException>(() => repository.GetById(0));
+                Assert.ThrowsException<ArgumentException>(() => repository.GetById(-1));
             }
         }
     }

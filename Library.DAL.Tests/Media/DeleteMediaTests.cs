@@ -1,16 +1,17 @@
-﻿using MediaLibrary.DAL.Enumerations;
-using MediaLibrary.DAL.Repositories;
+﻿using MediaLibrary.DAL.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Library.DAL.Tests.Media
 {
     [TestClass]
-    public class AddMediaTests
+    public class DeleteMediaTests
     {
         [TestMethod]
-        public void AddMedia_CorrectMediaProvided_ReturnAddedMedia()
+        //For this test, check whether the database contains at least one row before running
+        public void DeleteMedia_CorrectMediaIdProvided_ReturnTrue()
         {
             var connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MediaLibrary;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
@@ -18,24 +19,16 @@ namespace Library.DAL.Tests.Media
             {
                 //ARRANGE
                 var repository = new MediaRepository(connection);
-                var media = new MediaLibrary.DAL.Entities.Media
-                {
-                    Name = "Programming in C#",
-                    Url = @"C:\Users\Ambroise\Desktop\UNamur",
-                    Path = @"C:\Users\Ambroise\Desktop\UNamur",
-                    Type = MediaType.Book,
-                    Done = true
-                };
+                var media = repository.GetAll().Last();
                 //ACT
-                var result = repository.Insert(media);
+                var result = repository.Delete(media.Id);
                 //ASSERT
-                Assert.IsNotNull(result);
-                Assert.AreEqual("Programming in C#", result.Name);
+                Assert.IsTrue(result);
             }
         }
 
         [TestMethod]
-        public void AddMedia_NullMediaProvided_ThrowArgumentNullException()
+        public void DeleteMedia_BadMediaIdProvided_ThrowArgumentException()
         {
             var connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MediaLibrary;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
@@ -43,10 +36,11 @@ namespace Library.DAL.Tests.Media
             {
                 //ARRANGE
                 var repository = new MediaRepository(connection);
-                
+
                 //ACT
                 //ASSERT
-                Assert.ThrowsException<ArgumentNullException>(() => repository.Insert(null));
+                Assert.ThrowsException<ArgumentException>(() => repository.Delete(0));
+                Assert.ThrowsException<ArgumentException>(() => repository.Delete(-1));
             }
         }
     }

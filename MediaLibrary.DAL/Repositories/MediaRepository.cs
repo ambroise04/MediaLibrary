@@ -36,7 +36,7 @@ namespace MediaLibrary.DAL.Repositories
         {
             List<Entities.Media> medias = new List<Entities.Media>();
 
-            SqlCommand cmd = new SqlCommand("spGetMediaById", connection);
+            SqlCommand cmd = new SqlCommand("spGetAllMedias", connection);
             cmd.CommandType = CommandType.StoredProcedure;
             connection.Open();
             SqlDataReader reader = cmd.ExecuteReader();
@@ -48,7 +48,7 @@ namespace MediaLibrary.DAL.Repositories
                     Name = reader["Name"].ToString(),
                     Url = reader["Url"].ToString(),
                     Path = reader["Path"].ToString(),
-                    Type = (MediaType)Convert.ToInt32(reader["Path"]),
+                    Type = (MediaType)Enum.Parse(typeof(MediaType), reader["Type"].ToString()),
                     Done = Convert.ToBoolean(reader["Done"])
                 };
                 medias.Add(media);
@@ -68,6 +68,7 @@ namespace MediaLibrary.DAL.Repositories
 
             SqlCommand cmd = new SqlCommand("spGetMediaById", connection);
             cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Id", id);
             connection.Open();
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -76,7 +77,7 @@ namespace MediaLibrary.DAL.Repositories
                 media.Name = reader["Name"].ToString();
                 media.Url = reader["Url"].ToString();
                 media.Path = reader["Path"].ToString();
-                media.Type = (MediaType)Convert.ToInt32(reader["Path"]);
+                media.Type = (MediaType)Enum.Parse(typeof(MediaType), reader["Type"].ToString());
                 media.Done = Convert.ToBoolean(reader["Done"]);
             }
 
@@ -134,6 +135,24 @@ namespace MediaLibrary.DAL.Repositories
                 return entity;
             else
                 throw new Exception("An error was encountered when updating media");
+        }
+
+        public bool MediaCategory(int mediaId, int categoryId)
+        {
+            if (mediaId <= 0 || categoryId <= 0)
+                throw new ArgumentException("The provided media has wrong properties. Please check the object's id.");
+
+            var cmd = new SqlCommand("spAddMediaCategory", connection);
+            connection.Open();
+
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@MediaId",mediaId);
+            cmd.Parameters.AddWithValue("@CategoryId", categoryId);
+
+            var result = cmd.ExecuteNonQuery();
+            connection.Close();
+
+            return result > 0;
         }
     }
 }
