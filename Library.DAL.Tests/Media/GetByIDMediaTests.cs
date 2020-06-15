@@ -1,5 +1,4 @@
-﻿using MediaLibrary.DAL.Enumerations;
-using MediaLibrary.DAL.Repositories;
+﻿using MediaLibrary.DAL.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Data.SqlClient;
@@ -19,12 +18,12 @@ namespace Library.DAL.Tests.Media
             {
                 //ARRANGE
                 var repository = new MediaRepository(connection);
-                var lastMedia = repository.GetAll().LastOrDefault();
+                var firstMedia = repository.GetAll().FirstOrDefault();
                 //ACT
-                var result = repository.GetById(lastMedia.Id);
+                var result = repository.GetById(firstMedia.Id);
                 //ASSERT
                 Assert.IsNotNull(result);
-                Assert.AreEqual(lastMedia.Id, result.Id);
+                Assert.AreEqual(firstMedia.Id, result.Id);
             }
         }
 
@@ -37,7 +36,7 @@ namespace Library.DAL.Tests.Media
             {
                 //ARRANGE
                 var repository = new MediaRepository(connection);
-                
+
                 //ACT
                 //ASSERT
                 Assert.ThrowsException<ArgumentException>(() => repository.GetById(0));

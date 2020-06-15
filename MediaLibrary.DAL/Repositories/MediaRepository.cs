@@ -79,6 +79,12 @@ namespace MediaLibrary.DAL.Repositories
                 media.Path = reader["Path"].ToString();
                 media.Type = (MediaType)Enum.Parse(typeof(MediaType), reader["Type"].ToString());
                 media.Done = Convert.ToBoolean(reader["Done"]);
+                if(!(reader["Category.Id"] is DBNull))
+                    media.Categories.Add(new Entities.Category
+                    {
+                        Id = Convert.ToInt32(reader["Category.Id"]),
+                        Name = reader["Category.Name"].ToString()
+                    });
             }
 
             connection.Close();

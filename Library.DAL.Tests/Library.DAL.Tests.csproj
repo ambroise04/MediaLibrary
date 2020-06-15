@@ -62,7 +62,6 @@
     <Compile Include="Media\DeleteMediaTests.cs" />
     <Compile Include="Media\GetByIDMediaTests.cs" />
     <Compile Include="Media\AddMediaTests.cs" />
-    <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
