@@ -1,6 +1,8 @@
 using Library.DAL.UnitOfWork;
+using Media.DAL.Context;
 using MediaLibrary.DAL.Interfaces;
 using MediaLibrary.DAL.Repositories;
+using System.Configuration;
 using System.Web.Mvc;
 using Unity;
 using Unity.Mvc5;
@@ -18,7 +20,6 @@ namespace MediaLibrary.MVC5
 
             // e.g. container.RegisterType<ITestService, TestService>();
             //My services
-            container.RegisterType<IUnitOfWork, UnitOfWork>();
             container.RegisterType<IMediaRepository, MediaRepository>();
             container.RegisterType<ICategoryRepository, CategoryRepository>();
 
