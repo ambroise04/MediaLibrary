@@ -1,0 +1,59 @@
+﻿@model MediaLibrary.MVC5.Models.MediaVM
+
+@{
+    ViewBag.Title = "My medias list";
+    var medias = Model.Medias;
+}
+@section Styles{
+    <style>
+        .card {
+            box-shadow: none;
+        }
+    </style>
+}
+<div class="jumbotron">
+    <h1>My medias</h1>
+</div>
+<div class="row mb-lg-4 mb-sm-2">
+    <div class="col-md-12 d-flex flex-lg-row flex-md-row justify-content-between flex-wrap">
+        <p class=" my-2 my-lg-0">Add a new media ? <a class="btn btn-rounded btn-outline-info" data-toggle="modal" data-target="#media-modal">New media</a></p>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @foreach (var media in medias)
+        {
+            <div class="row card mb-1">
+                <div class="col-md-12 card-body">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-md-2">
+                            <p class="text-center"><i class="far fa-copy fa-4x"></i></p>
+                        </div>
+                        <div class="col-md-8">
+                            <p class="font-weight-bold">@media.Name</p>
+                            <div class="pb-0">
+                                <p><i class="fas fa-link mr-2"></i>Placement: @media.Url</p>
+                                <p>File type : @media.Type.ToString()</p>
+                                <p><small style="color:grey">Date : 20/06/2020</small></p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex flex-lg-column flex-md-column align-items-lg-center flex-sm-row justify-content-sm-center ">
+                            <a class="text-info"><i class="far fa-edit"></i></a>
+                            <a class="text-danger"><i class="far fa-trash-alt"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("_AddMedia", Model)
+
+@section Scripts {
+    <script src="~/Scripts/Custom/add-media.js"></script>
+}
