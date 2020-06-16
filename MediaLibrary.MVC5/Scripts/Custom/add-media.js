@@ -37,7 +37,7 @@ function sendData(data) {
         },
         error: function (data) {
 
-            toastr.error("Sorry, an error was encountered. Please try again.");
+            toastr.error("Sorry, an error was encountered. Please try again. [ " + data.responseText + " ]");
         }
     })
 }

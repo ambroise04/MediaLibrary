@@ -49,7 +49,8 @@ namespace MediaLibrary.DAL.Repositories
                     Url = reader["Url"].ToString(),
                     Path = reader["Path"].ToString(),
                     Type = (MediaType)Enum.Parse(typeof(MediaType), reader["Type"].ToString()),
-                    Done = Convert.ToBoolean(reader["Done"])
+                    Done = Convert.ToBoolean(reader["Done"]),
+                    DateOfAddition = DateTime.Parse(reader["DateOfAddition"].ToString())
                 };
                 medias.Add(media);
             };
@@ -79,7 +80,8 @@ namespace MediaLibrary.DAL.Repositories
                 media.Path = reader["Path"].ToString();
                 media.Type = (MediaType)Enum.Parse(typeof(MediaType), reader["Type"].ToString());
                 media.Done = Convert.ToBoolean(reader["Done"]);
-                if(!(reader["Category.Id"] is DBNull))
+                media.DateOfAddition = DateTime.Parse(reader["DateOfAddition"].ToString());
+                if (!(reader["Category.Id"] is DBNull))
                     media.Categories.Add(new Entities.Category
                     {
                         Id = Convert.ToInt32(reader["Category.Id"]),
@@ -106,6 +108,7 @@ namespace MediaLibrary.DAL.Repositories
             cmd.Parameters.AddWithValue("@Path", entity.Path);
             cmd.Parameters.AddWithValue("@Type", entity.Type);
             cmd.Parameters.AddWithValue("@Done", entity.Done);
+            cmd.Parameters.AddWithValue("@Date", DateTime.Now);
 
             var result = cmd.ExecuteNonQuery();
             connection.Close();
@@ -133,6 +136,7 @@ namespace MediaLibrary.DAL.Repositories
             cmd.Parameters.AddWithValue("@Path", entity.Path);
             cmd.Parameters.AddWithValue("@Type", entity.Type);
             cmd.Parameters.AddWithValue("@Done", entity.Done);
+            cmd.Parameters.AddWithValue("@Date", DateTime.Now);
 
             var result = cmd.ExecuteNonQuery();
             connection.Close();

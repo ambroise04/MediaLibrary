@@ -1,4 +1,5 @@
 ﻿using MediaLibrary.DAL.Enumerations;
+using System;
 using System.Collections.Generic;
 
 namespace MediaLibrary.DAL.Entities
@@ -16,5 +17,6 @@ namespace MediaLibrary.DAL.Entities
         public MediaType Type { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
         public bool Done { get; set; }
+        public DateTime DateOfAddition { get; set; }
     }
 }

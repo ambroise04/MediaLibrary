@@ -32,6 +32,7 @@ namespace MediaLibrary.MVC5.Controllers
             {
                 media.Path = Path.GetFileName(file.FileName);
                 media.Url = Path.Combine(Server.MapPath("~/images"), file.FileName);
+                file.SaveAs(media.Url);
             }
             var result = unitOfWork.MediaRepository.Insert(media);
             if (result != null)
