@@ -18,7 +18,17 @@ namespace MediaLibrary.DAL.Repositories
 
         public bool Delete(int id)
         {
-            throw new System.NotImplementedException();
+            if (id <= 0)
+                throw new ArgumentException("Bad id was provided");
+
+            SqlCommand cmd = new SqlCommand("spDeleteCategory", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            connection.Open();
+            cmd.Parameters.AddWithValue("@Id", id);
+            var result = cmd.ExecuteNonQuery();
+            connection.Close();
+
+            return result > 0;
         }
 
         public ICollection<Category> GetAll()
@@ -49,7 +59,7 @@ namespace MediaLibrary.DAL.Repositories
             if (id <= 0)
                 throw new ArgumentException("Bad id was provided");
 
-            Category media = new Category();
+            Category category = new Category();
 
             SqlCommand cmd = new SqlCommand("spGetCategoryById", connection);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -58,13 +68,13 @@ namespace MediaLibrary.DAL.Repositories
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                media.Id = Convert.ToInt32(reader["Id"]);
-                media.Name = reader["Name"].ToString();
+                category.Id = Convert.ToInt32(reader["Id"]);
+                category.Name = reader["Name"].ToString();
             }
 
             connection.Close();
 
-            return media;
+            return category;
         }
 
         public Category Insert(Category entity)
@@ -84,12 +94,30 @@ namespace MediaLibrary.DAL.Repositories
             if (result > 0)
                 return entity;
             else
-                throw new Exception("An error was encountered when inserting media");
+                throw new Exception("An error was encountered when inserting category");
         }
 
         public Category Update(Category entity)
         {
-            throw new System.NotImplementedException();
+            if (entity is null)
+                throw new ArgumentNullException(nameof(entity));
+            if (entity.Id <= 0)
+                throw new ArgumentException("The provided category has wrong properties. Please check the object's id.");
+
+            var cmd = new SqlCommand("spUpdateCategory", connection);
+            connection.Open();
+
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Id", entity.Id);
+            cmd.Parameters.AddWithValue("@Name", entity.Name);
+
+            var result = cmd.ExecuteNonQuery();
+            connection.Close();
+
+            if (result > 0)
+                return entity;
+            else
+                throw new Exception("An error was encountered when updating category");
         }
     }
 }

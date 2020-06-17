@@ -1,6 +1,5 @@
 ﻿using Library.DAL.UnitOfWork;
 using MediaLibrary.MVC5.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,7 +35,7 @@ namespace MediaLibrary.MVC5.Controllers
                 medias = unitOfWork.MediaRepository.GetAll().Where(m => m.Name.ToLower().Contains(search.ToLower())).ToList();
             else
                 medias = unitOfWork.MediaRepository.GetAll().ToList();
-            
+
             return Json(new { data = medias }, JsonRequestBehavior.AllowGet);
         }
 
@@ -80,9 +79,9 @@ namespace MediaLibrary.MVC5.Controllers
 
             if (!result)
                 return Json(new { status = false, message = "Sorry, we encountered an error while processing your request. Please try again." });
-            
+
             var data = unitOfWork.MediaRepository.GetAll();
-           
+
             return Json(new { status = true, message = "Media deleted successfully.", data });
         }
 
@@ -110,7 +109,7 @@ namespace MediaLibrary.MVC5.Controllers
         [HttpPost]
         public ActionResult Edit(DAL.Entities.Media media, int Category)
         {
-            if(media is null)
+            if (media is null)
                 return Json(new { status = false, message = "Sorry, your request cannot be processed. Please try again." });
 
             if (media.Id <= 0)
@@ -124,7 +123,7 @@ namespace MediaLibrary.MVC5.Controllers
 
             var data = unitOfWork.MediaRepository.GetAll();
 
-            return Json(new { status = true, message = "Media updated successfully.", data});
+            return Json(new { status = true, message = "Media updated successfully.", data });
         }
     }
 }

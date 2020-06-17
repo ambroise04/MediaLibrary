@@ -29,12 +29,15 @@
                         </div>
                         <div class="col d-flex flex-column">
                             <label for="type">Categories</label>
-                            <select class="custom-select form-control" id="category" name="Category">
-                                @foreach (var category in Model.Categories)
-                                {
-                                    <option value="@category.Id">@category.Name</option>
-                                }
-                            </select>
+                            <div class="d-inline">
+                                <select class="custom-select form-control" id="category" name="Category">
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                </select>
+                                <span><a href="@Url.Action("Create", "Category")" class="text-info"><i class="fas fa-plus ml-2"></i></a></span>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
