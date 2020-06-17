@@ -9,5 +9,6 @@ namespace MediaLibrary.MVC5.Models
         public MediaType Type { get; set; }
         public ICollection<Category> Categories { get; set; }
         public ICollection<DAL.Entities.Media> Medias { get; set; }
+        public DAL.Entities.Media Media { get; set; }
     }
 }

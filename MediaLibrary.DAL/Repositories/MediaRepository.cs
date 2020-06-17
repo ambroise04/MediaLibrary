@@ -50,7 +50,12 @@ namespace MediaLibrary.DAL.Repositories
                     Path = reader["Path"].ToString(),
                     Type = (MediaType)Enum.Parse(typeof(MediaType), reader["Type"].ToString()),
                     Done = Convert.ToBoolean(reader["Done"]),
-                    DateOfAddition = DateTime.Parse(reader["DateOfAddition"].ToString())
+                    DateOfAddition = DateTime.Parse(reader["DateOfAddition"].ToString()),
+                    Category = new Entities.Category
+                    {
+                        Id = Convert.ToInt32(reader["Category.Id"]),
+                        Name = reader["Category.Name"].ToString()
+                    }
                 };
                 medias.Add(media);
             };
@@ -82,11 +87,11 @@ namespace MediaLibrary.DAL.Repositories
                 media.Done = Convert.ToBoolean(reader["Done"]);
                 media.DateOfAddition = DateTime.Parse(reader["DateOfAddition"].ToString());
                 if (!(reader["Category.Id"] is DBNull))
-                    media.Categories.Add(new Entities.Category
+                    media.Category = new Entities.Category
                     {
                         Id = Convert.ToInt32(reader["Category.Id"]),
                         Name = reader["Category.Name"].ToString()
-                    });
+                    };
             }
 
             connection.Close();
@@ -108,6 +113,7 @@ namespace MediaLibrary.DAL.Repositories
             cmd.Parameters.AddWithValue("@Path", entity.Path);
             cmd.Parameters.AddWithValue("@Type", entity.Type);
             cmd.Parameters.AddWithValue("@Done", entity.Done);
+            cmd.Parameters.AddWithValue("@CategoryId", entity.Category.Id);
             cmd.Parameters.AddWithValue("@Date", DateTime.Now);
 
             var result = cmd.ExecuteNonQuery();
@@ -136,6 +142,7 @@ namespace MediaLibrary.DAL.Repositories
             cmd.Parameters.AddWithValue("@Path", entity.Path);
             cmd.Parameters.AddWithValue("@Type", entity.Type);
             cmd.Parameters.AddWithValue("@Done", entity.Done);
+            cmd.Parameters.AddWithValue("@CategoryId", entity.Category.Id);
             cmd.Parameters.AddWithValue("@Date", DateTime.Now);
 
             var result = cmd.ExecuteNonQuery();
@@ -145,24 +152,6 @@ namespace MediaLibrary.DAL.Repositories
                 return entity;
             else
                 throw new Exception("An error was encountered when updating media");
-        }
-
-        public bool MediaCategory(int mediaId, int categoryId)
-        {
-            if (mediaId <= 0 || categoryId <= 0)
-                throw new ArgumentException("The provided media has wrong properties. Please check the object's id.");
-
-            var cmd = new SqlCommand("spAddMediaCategory", connection);
-            connection.Open();
-
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@MediaId",mediaId);
-            cmd.Parameters.AddWithValue("@CategoryId", categoryId);
-
-            var result = cmd.ExecuteNonQuery();
-            connection.Close();
-
-            return result > 0;
         }
     }
 }

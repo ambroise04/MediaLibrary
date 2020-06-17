@@ -98,6 +98,10 @@
     <Compile Include="Migrations\202006161522188_v2_AddDateToMediaEntity.designer.cs">
       <DependentUpon>202006161522188_v2_AddDateToMediaEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006170720210_v3_RemoveManyToManyRelationship.cs" />
+    <Compile Include="Migrations\202006170720210_v3_RemoveManyToManyRelationship.designer.cs">
+      <DependentUpon>202006170720210_v3_RemoveManyToManyRelationship.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
@@ -115,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006161522188_v2_AddDateToMediaEntity.resx">
       <DependentUpon>202006161522188_v2_AddDateToMediaEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006170720210_v3_RemoveManyToManyRelationship.resx">
+      <DependentUpon>202006170720210_v3_RemoveManyToManyRelationship.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

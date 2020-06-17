@@ -172,6 +172,8 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\Custom\edit-media.js" />
+    <Content Include="Scripts\Custom\delete-media.js" />
     <Content Include="Scripts\Custom\add-media.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -197,6 +199,9 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Media\Index.cshtml" />
     <Content Include="Views\Media\_AddMedia.cshtml" />
+    <Content Include="Views\Media\_DeleteConfirmation.cshtml" />
+    <Content Include="Views\Media\_EditMedia.cshtml" />
+    <Content Include="Views\Media\_EditMediaHeader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

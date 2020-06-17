@@ -1,5 +1,6 @@
 ﻿using Library.DAL.UnitOfWork;
 using MediaLibrary.MVC5.Models;
+using System;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
@@ -32,8 +33,11 @@ namespace MediaLibrary.MVC5.Controllers
             {
                 media.Path = Path.GetFileName(file.FileName);
                 media.Url = Path.Combine(Server.MapPath("~/images"), file.FileName);
-                file.SaveAs(media.Url);
+                //file.SaveAs(media.Url);
             }
+
+            media.Category = new DAL.Entities.Category { Id = Category };
+
             var result = unitOfWork.MediaRepository.Insert(media);
             if (result != null)
             {
@@ -41,6 +45,64 @@ namespace MediaLibrary.MVC5.Controllers
             }
 
             return Json(new { status = false, message = "An error was encountered. Please try again later." });
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            if (id <= 0)
+                return Json(new { status = false, message = "Bad parameter was provided." });
+
+            var retrievedMedia = unitOfWork.MediaRepository.GetById(id);
+
+            if (retrievedMedia is null)
+                return Json(new { status = false, message = "No media found for the given parameter" });
+
+            var result = unitOfWork.MediaRepository.Delete(id);
+
+            if (!result)
+                return Json(new { status = false, message = "Sorry, we encountered an error while processing your request. Please try again." });
+
+            return Json(new { status = true, message = "Media deleted successfully." });
+        }
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            if (id <= 0)
+                return Json(new { status = false, message = "Bad parameter was provided." });
+
+            var retrievedMedia = unitOfWork.MediaRepository.GetById(id);
+
+            if (retrievedMedia is null)
+                return Json(new { status = false, message = "No media found for the given parameter" });
+
+            var model = new MediaVM
+            {
+                Medias = unitOfWork.MediaRepository.GetAll(),
+                Categories = unitOfWork.CategoryRepository.GetAll(),
+                Media = retrievedMedia
+            };
+
+            return PartialView("_EditMedia", model);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(DAL.Entities.Media media, int Category)
+        {
+            if(media is null)
+                return Json(new { status = false, message = "Sorry, your request cannot be processed. Please try again." });
+
+            if (media.Id <= 0)
+                return Json(new { status = false, message = "Bad parameter was provided." });
+
+            media.Category = new DAL.Entities.Category { Id = Category };
+            var result = unitOfWork.MediaRepository.Update(media);
+
+            if (result is null)
+                return Json(new { status = false, message = "Sorry, an error was encountered. Please try again." });
+
+            return Json(new { status = true, message = "Media updated successfully." });
         }
     }
 }
