@@ -31,6 +31,7 @@ function sendData(data) {
                 $('#media-form').trigger("reset");
                 $("#media-modal").modal("hide");
                 toastr.success(result["message"]);
+                listing(result["data"]);
             } else {
                 toastr.error(result["message"]);
             }            
@@ -40,4 +41,3 @@ function sendData(data) {
         }
     })
 }
-

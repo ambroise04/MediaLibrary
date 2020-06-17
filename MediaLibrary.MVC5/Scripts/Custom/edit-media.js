@@ -1,16 +1,14 @@
-$(document).ready(function () {
-    $(".edit").on("click", function (event) {
+function edit(obj, event) {
+    event = window.event
+    event.preventDefault();
+    var id = obj.getAttribute("data");
+    getPartial(id);
+
+    $("#btn-edit-media").on("click", function (event) {
         event.preventDefault();
-        var id = this.getAttribute("data");
-        getPartial(id);
-
-        $("#btn-edit-media").on("click", function (event) {
-            event.preventDefault();
-            editMedia();
-        })
+        editMedia();
     })
-
-})
+}
 
 function getPartial(id) {
     $.ajax({
@@ -39,6 +37,7 @@ function editMedia() {
             if (result["status"]) {
                 $("#media-edit-modal").modal("hide");
                 toastr.success(result["message"]);
+                listing(result["data"]);
             } else {
                 toastr.error(result["message"]);
             }

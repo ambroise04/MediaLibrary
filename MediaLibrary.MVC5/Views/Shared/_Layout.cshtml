@@ -8,6 +8,7 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     <link href="~/Content/toastr.css" rel="stylesheet" />
+    <link href="~/Content/jqloader.min.css" rel="stylesheet" />
     @RenderSection("Styles", false)
 </head>
 <body>
@@ -49,6 +50,8 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     <script src="~/Scripts/toastr.js"></script>
+    <script src="~/Scripts/jqloader.js"></script>
+    <script src="~/Scripts/loading.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

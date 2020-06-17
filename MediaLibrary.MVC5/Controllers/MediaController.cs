@@ -1,7 +1,9 @@
 ﻿using Library.DAL.UnitOfWork;
 using MediaLibrary.MVC5.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -25,11 +27,24 @@ namespace MediaLibrary.MVC5.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public ActionResult Search(string search)
+        {
+            ICollection<DAL.Entities.Media> medias;
+
+            if (!string.IsNullOrEmpty(search))
+                medias = unitOfWork.MediaRepository.GetAll().Where(m => m.Name.ToLower().Contains(search.ToLower())).ToList();
+            else
+                medias = unitOfWork.MediaRepository.GetAll().ToList();
+            
+            return Json(new { data = medias }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(DAL.Entities.Media media, int Category, HttpPostedFileBase file)
         {
-            if (file.ContentLength > 0)
+            if (file != null && file.ContentLength > 0)
             {
                 media.Path = Path.GetFileName(file.FileName);
                 media.Url = Path.Combine(Server.MapPath("~/images"), file.FileName);
@@ -41,8 +56,11 @@ namespace MediaLibrary.MVC5.Controllers
             var result = unitOfWork.MediaRepository.Insert(media);
             if (result != null)
             {
-                return Json(new { status = true, message = "Media added successfully" });
+                var data = unitOfWork.MediaRepository.GetAll();
+
+                return Json(new { status = true, message = "Media added successfully", data });
             }
+
 
             return Json(new { status = false, message = "An error was encountered. Please try again later." });
         }
@@ -62,8 +80,10 @@ namespace MediaLibrary.MVC5.Controllers
 
             if (!result)
                 return Json(new { status = false, message = "Sorry, we encountered an error while processing your request. Please try again." });
-
-            return Json(new { status = true, message = "Media deleted successfully." });
+            
+            var data = unitOfWork.MediaRepository.GetAll();
+           
+            return Json(new { status = true, message = "Media deleted successfully.", data });
         }
 
         [HttpGet]
@@ -102,7 +122,9 @@ namespace MediaLibrary.MVC5.Controllers
             if (result is null)
                 return Json(new { status = false, message = "Sorry, an error was encountered. Please try again." });
 
-            return Json(new { status = true, message = "Media updated successfully." });
+            var data = unitOfWork.MediaRepository.GetAll();
+
+            return Json(new { status = true, message = "Media updated successfully.", data});
         }
     }
 }

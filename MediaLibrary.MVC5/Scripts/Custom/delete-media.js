@@ -1,16 +1,15 @@
-$(document).ready(function () {
-    $(".remove").on("click", function (event) {
-        event.preventDefault();
-        var id = this.getAttribute("data");
-        $("#media-modal-delete").modal("show");
+function del(obj, event) {
+    event = window.event
+    event.preventDefault();
 
-        $("#btn-delete-media").on("click", function (event) {
-            event.preventDefault();
-            deleteMedia(id);
-        })
+    var id = obj.getAttribute("data");
+    $("#media-modal-delete").modal("show");
+
+    $("#btn-delete-media").on("click", function (event) {
+        event.preventDefault();
+        deleteMedia(id);
     })
-    
-})
+}
 
 function deleteMedia(id) {
     $.ajax({
@@ -22,6 +21,7 @@ function deleteMedia(id) {
             if (result["status"]) {
                 $("#media-modal-delete").modal("hide");
                 toastr.success(result["message"]);
+                listing(result["data"]);
             } else {
                 toastr.error(result["message"]);
             }            
